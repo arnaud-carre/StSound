@@ -1,0 +1,60 @@
+v1.43
+---------------------------------------------------------------------------
+- Now ST-Sound is under BSD license ( more permissive than previous LGPL )
+- major bug fix in sync-buzzer use ( thanks to Thomas Jarosch )
+- minor initialization bug fix ( thanks to Thomas Jarosch )
+
+v1.42
+---------------------------------------------------------------------------
+- ymMusicGetPos is now supported for "DigiMix" type of music
+- Minor compilation fix on linux 64bits and some code cleanup (thanks to Clement Corde)
+
+v1.41
+---------------------------------------------------------------------------
+- ST-Sound license changed from GPL to LGPL
+
+v1.4
+---------------------------------------------------------------------------
+- added Visual Studio 2010 Express edition projet files
+
+v1.3
+---------------------------------------------------------------------------
+- Non-interlaced YM5&YM6 file bug fix (some amstrad musics are now working)
+- Improved depacking API to handle some corrupted LZH headers
+- Time seeking enabled for YM-Mix and YM-Trackedr musics
+- Set build-in low-pass filter ON/OFF function
+- added Visual Studio 2008 Express edition projet files
+
+
+v1.2
+----------------------------------------------------
+- new low pass filter routine (faster and no more dynamic allocation)
+- LZH depacking multi-thread safe
+- Rare bad division crash fixed. Thanks to Alexandru Simion
+- memory leak fixed with old format (YM2 and YM3). Thanks to Alexandru Simion
+- GetInfo time reported in second and millisecond now
+- Both project files for VisualC++ 6 and .Net 2003
+- WARNING:	Three files were removed from 1.1b: Depacker.h, Depacker.cpp and lzhxlib.c
+			One file is added: LzhLib.cpp
+
+
+v1.1b
+----------------------------------------------------
+- runtime build in basic types size checking
+- some "short" types converted to ymsample
+
+
+v1.1
+----------------------------------------------------
+- YmTypes.h added to help multiplatform port
+- Added Sync-Buzzer sound effect support
+- Integer only version (no float or double used by default)
+- Small changes in C interface (ymMusicCreate and ymMusicDestroy added)
+- little/big endian fixed for bigendian platform (depacking and Ym3b format)
+- Memory leak fixed in LZHXLIB library
+- printf fixed in the YM to WAV sample code
+
+
+v1.0
+----------------------------------------------------
+- First release.

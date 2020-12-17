@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmallYmPlayer", "SmallYmPlayer\SmallYmPlayer.vcxproj", "{477B9C42-BE9C-47F6-B6D1-E70EC34F72AB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StSoundLibrary", "StSoundLibrary\StSoundLibrary.vcxproj", "{E78919ED-80E5-4BA3-A93A-0A59C9241BE4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ym2Wav", "Ym2Wav\Ym2Wav.vcxproj", "{E1CDA4C7-4D43-40DF-BD6A-4D1F25E478F0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{477B9C42-BE9C-47F6-B6D1-E70EC34F72AB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{477B9C42-BE9C-47F6-B6D1-E70EC34F72AB}.Debug|Win32.Build.0 = Debug|Win32
+		{477B9C42-BE9C-47F6-B6D1-E70EC34F72AB}.Release|Win32.ActiveCfg = Release|Win32
+		{477B9C42-BE9C-47F6-B6D1-E70EC34F72AB}.Release|Win32.Build.0 = Release|Win32
+		{E78919ED-80E5-4BA3-A93A-0A59C9241BE4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E78919ED-80E5-4BA3-A93A-0A59C9241BE4}.Debug|Win32.Build.0 = Debug|Win32
+		{E78919ED-80E5-4BA3-A93A-0A59C9241BE4}.Release|Win32.ActiveCfg = Release|Win32
+		{E78919ED-80E5-4BA3-A93A-0A59C9241BE4}.Release|Win32.Build.0 = Release|Win32
+		{E1CDA4C7-4D43-40DF-BD6A-4D1F25E478F0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E1CDA4C7-4D43-40DF-BD6A-4D1F25E478F0}.Debug|Win32.Build.0 = Debug|Win32
+		{E1CDA4C7-4D43-40DF-BD6A-4D1F25E478F0}.Release|Win32.ActiveCfg = Release|Win32
+		{E1CDA4C7-4D43-40DF-BD6A-4D1F25E478F0}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
