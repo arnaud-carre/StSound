@@ -58,9 +58,9 @@ static	void	signeSample(ymu8 *ptr,yms32 size)
 		}
 }
 
-char	*mstrdup(char *in)
+char	*mstrdup(const char *in)
 {
-	const int size = strlen(in)+1;
+	const int size = (int)strlen(in)+1;
 	char *out = (char*)malloc(size);
 	if (out)
 		strcpy(out,in);
@@ -157,7 +157,7 @@ unsigned char	*CYmMusic::depackFile(ymu32 checkOriginalSize)
 		if (packedSize <= checkOriginalSize)
 		{
 			// alloc space for depacker and depack data
-			CLzhDepacker *pDepacker = new CLzhDepacker;	
+			CLzhDepacker *pDepacker = new CLzhDepacker;
 			const bool bRet = pDepacker->LzUnpack(pSrc,packedSize,pNew,fileSize);
 			delete pDepacker;
 
@@ -260,7 +260,7 @@ ymbool	CYmMusic::ymDecode(void)
  ymu32 sampleSize;
  yms32 tmp;
  ymu32 id;
- 
+
 
 		id = ReadBigEndian32((unsigned char*)pBigMalloc);
 		switch (id)
@@ -531,7 +531,7 @@ ymbool	CYmMusic::ymDecode(void)
 		return YMTRUE;
  }
 
- 
+
 ymbool	CYmMusic::checkCompilerTypes()
 {
 	setLastError("Basic types size are not correct (check ymTypes.h)");
