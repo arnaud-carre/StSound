@@ -78,7 +78,7 @@ class	CDcAdjuster
 {
 public:
 	CDcAdjuster();
-	
+
 	void	AddSample(ymint sample);
 	ymint	GetDcLevel(void)			{ return m_sum / DC_ADJUST_BUFFERLEN; }
 	void	Reset(void);

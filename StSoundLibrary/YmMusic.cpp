@@ -47,9 +47,9 @@ static	const ymint	mfpPrediv[8] = {0,4,10,16,50,64,100,200};
 
 
 
-CYmMusic::CYmMusic(ymint _replayRate)
+CYmMusic::CYmMusic(ymint _replayRate) :
+    ymChip(ATARI_CLOCK, 1, _replayRate)
 {
-
 	pBigMalloc = NULL;
 	pSongName = NULL;
 	pSongAuthor = NULL;
