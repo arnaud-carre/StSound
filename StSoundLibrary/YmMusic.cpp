@@ -420,7 +420,7 @@ void	CYmMusic::player(void)
 
 			if (ptr[12])
 			{
-				sampleFrq = (MFP_CLOCK / ptr[12]);
+				sampleFrq = ((MFP_CLOCK/4) / ptr[12]);
 				ymChip.drumStart(	2,							// Voice C
 									sampleAdress[sampleNum],
 									sampleLen[sampleNum],
