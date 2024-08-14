@@ -34,6 +34,31 @@ The package is done to work very nicely with Microsoft Visual Studio
 For Visual Studio users: Load StSound_vc2017.sln file into your lovely IDE and just build one of the tutorial sample or the main library. Everything should work without pain
 For other users ( Linux, Gameboy color or any strange system), just search in your head some very, very oldschool knowledge and build a nice makefile :-) ( should be easy for StSoundLibrary)
 
+## Compile on MacOS (and presumably Linux)
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+This will compile SmallYmPlayer, StSoundLibrary and (most importantly) Ym2Wav, the latter of which can be used
+on the shell to convert YM files to WAV like this:
+
+```
+# from the build directory
+./Ym2Wav/Ym2Wav ../YmSampleFiles/ANCOOL1.YM ancool1.wav
+
+# to play ancool1.wav run
+play ancool1.wav
+# or
+aplay ancool1.wav
+```
+
+SmallYmPlayer has been patched such that it compiles on non-Windows system, but if you run it, it will only tell you that it can't run :)
+
+
 # Legal
 ST-Sound library is written by Arnaud Carré and is public domain. You can use it as you wish. If you're using it in your project, any credits in any readme file is appreciated :)
 As almost all YM files on the web are packed with LZH method, ST-Sound includes LZH depacking code written by Haruhiko Okumura and modifyed/improved by Kerwin F. Medina.
