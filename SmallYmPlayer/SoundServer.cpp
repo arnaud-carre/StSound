@@ -1,6 +1,8 @@
+#ifdef _WIN32
+
 /*********************************************************************************
 
-	SoundServer - Written by Arnaud Carré (aka Leonard / OXYGENE)
+	SoundServer - Written by Arnaud Carrï¿½ (aka Leonard / OXYGENE)
 	Part of the "Leonard Homepage Articles".
 	http://leonard.oxg.free.fr
 	Read the complete article on my web page:
@@ -128,3 +130,5 @@ void	CSoundServer::fillNextBuffer(void)
 		m_currentBuffer++;
 		if (m_currentBuffer >= REPLAY_NBSOUNDBUFFER) m_currentBuffer = 0;
 }
+
+#endif

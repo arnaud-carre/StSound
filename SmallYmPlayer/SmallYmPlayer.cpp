@@ -1,3 +1,5 @@
+#ifdef _WIN32
+
 /*-----------------------------------------------------------------------------
 
 	ST-Sound ( YM files player library )
@@ -144,4 +146,14 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+#else
 
+#include <stdio.h>
+
+int main(int argc, char* argv[])
+{
+	printf(	"SmallYmPlayer only run on Windows, sorry!\n");
+	return 0;	
+}
+
+#endif
