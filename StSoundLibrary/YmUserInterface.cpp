@@ -46,6 +46,10 @@ YMMUSIC	* ymMusicCreate()
 	return (YMMUSIC*)(new CYmMusic);
 }
 
+YMMUSIC * ymMusicCreateWithRate(ymint rate)
+{
+	return (YMMUSIC*)(new CYmMusic(rate));
+}
 
 ymbool ymMusicLoad(YMMUSIC *pMus, const char *fName)
 {

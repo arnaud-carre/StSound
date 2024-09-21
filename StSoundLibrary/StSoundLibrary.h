@@ -60,6 +60,7 @@ extern "C"
 
 // Create object
 extern	YMMUSIC *		ymMusicCreate();
+extern  YMMUSIC *		ymMusicCreateWithRate(ymint rate);
 
 // Release object
 extern	void			ymMusicDestroy(YMMUSIC *pMusic);
