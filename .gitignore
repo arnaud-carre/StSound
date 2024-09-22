@@ -351,3 +351,9 @@ MigrationBackup/
 
 # added to build outside of windows
 build/
+
+# Unix generated files
+*.o
+*.a
+Ym2Wav/Ym2Wav
+*.wav
