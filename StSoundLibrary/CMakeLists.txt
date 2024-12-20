@@ -1,5 +1,10 @@
 set(PROJECT_NAME StSoundLibrary)
 
+if(NOT WIN32 AND NOT APPLE)
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/dummy.sym" "{\n global: *;\n};\n")
+    check_linker_flag(CXX "-Wl,--version-script=${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/dummy.sym" HAVE_WL_VERSION_SCRIPT)
+endif()
+
 ################################################################################
 # Source groups
 ################################################################################
@@ -12,6 +17,7 @@ set(Headers
     "YmMusic.h"
     "YmTypes.h"
 )
+
 source_group("Headers" FILES ${Headers})
 
 set(Sources
@@ -22,6 +28,9 @@ set(Sources
     "YmMusic.cpp"
     "YmUserInterface.cpp"
 )
+if(WIN32)
+    list(APPEND Sources "stsound.def")
+endif()
 source_group("Sources" FILES ${Sources})
 
 set(ALL_FILES
@@ -32,75 +41,22 @@ set(ALL_FILES
 ################################################################################
 # Target
 ################################################################################
-add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
+add_library(StSoundLibrary STATIC ${ALL_FILES})
 
-use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
-################################################################################
-# Target name
-################################################################################
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG   "StSoundLibrary"
-    TARGET_NAME_RELEASE "StSoundLibrary"
-)
-################################################################################
-# Output directory
-################################################################################
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    OUTPUT_DIRECTORY_DEBUG   "${CMAKE_CURRENT_SOURCE_DIR}/./Debug"
-    OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/./Release"
-)
-################################################################################
-# MSVC runtime library
-################################################################################
-get_property(MSVC_RUNTIME_LIBRARY_DEFAULT TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY)
-string(CONCAT "MSVC_RUNTIME_LIBRARY_STR"
-    $<$<CONFIG:Debug>:
-        MultiThreadedDebug
-    >
-    $<$<CONFIG:Release>:
-        MultiThreaded
-    >
-    $<$<NOT:$<OR:$<CONFIG:Debug>,$<CONFIG:Release>>>:${MSVC_RUNTIME_LIBRARY_DEFAULT}>
-)
-set_target_properties(${PROJECT_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY ${MSVC_RUNTIME_LIBRARY_STR})
-
-################################################################################
-# Compile definitions
-################################################################################
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "$<$<CONFIG:Debug>:"
-        "_DEBUG"
-    ">"
-    "$<$<CONFIG:Release>:"
-        "NDEBUG"
-    ">"
-    "WIN32;"
-    "_LIB;"
-    "_MBCS"
-)
-
-################################################################################
-# Compile and link options
-################################################################################
-if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug>:
-            /Od;
-            /RTC1;
-            /ZI
-        >
-        $<$<CONFIG:Release>:
-            /O2;
-            /Ob1;
-            /GF;
-            /Gy;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-        >
-        /W3;
-        ${DEFAULT_CXX_EXCEPTION_HANDLING}
-    )
-    target_link_options(${PROJECT_NAME} PRIVATE
-        /NOLOGO
-    )
+if(WIN32)
+    set_property(TARGET StSoundLibrary PROPERTY PREFIX "")
 endif()
+if(BUILD_SHARED_LIBS AND HAVE_WL_VERSION_SCRIPT)
+    target_link_options(StSoundLibrary PRIVATE "-Wl,--version-script,${CMAKE_CURRENT_SOURCE_DIR}/stsound.sym")
+    set_property(TARGET StSoundLibrary APPEND PROPERTY LINK_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/stsound.sym")
+endiF()
 
+install(TARGETS StSoundLibrary EXPORT StSound-exports
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+)
+install(FILES "StSoundLibrary.h" "YmTypes.h"
+    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+)
+install(EXPORT StSound-exports DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/cmake/StSound/StSoundConfig.cmake")

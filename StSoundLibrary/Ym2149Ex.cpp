@@ -549,6 +549,9 @@ void	CYm2149Ex::sidStart(ymint voice,ymint timerFreq,ymint vol)
 
 void	CYm2149Ex::sidSinStart(ymint voice,ymint timerFreq,ymint vol)
 {
+	(void) voice;
+	(void) timerFreq;
+	(void) vol;
 	// TODO
 }
 

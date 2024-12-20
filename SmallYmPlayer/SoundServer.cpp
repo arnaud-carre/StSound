@@ -20,12 +20,16 @@
 #include <windows.h>
 #include "SoundServer.h"
 
-
+#ifdef _MSC_VER
 #pragma	comment(lib,"winmm.lib")
+#endif
 
 // Internal WaveOut API callback function. We just call our sound handler ("playNextBuffer")
-static	void CALLBACK waveOutProc(HWAVEOUT hwo,UINT uMsg,DWORD dwInstance,DWORD dwParam1,DWORD dwParam2)
+static	void CALLBACK waveOutProc(HWAVEOUT hwo,UINT uMsg,DWORD_PTR dwInstance,DWORD_PTR dwParam1,DWORD_PTR dwParam2)
 {
+	(void) hwo;
+	(void) dwParam1;
+	(void) dwParam2;
 
 	if (WOM_DONE == uMsg)
 	{
@@ -67,8 +71,8 @@ BOOL	CSoundServer::open(USER_CALLBACK pUserCallback,long totalBufferedSoundLen)
 		MMRESULT errCode = waveOutOpen(	&m_hWaveOut,
 										WAVE_MAPPER,
 										&wfx,
-										(DWORD)waveOutProc,
-										(DWORD)this,					// User data.
+										(DWORD_PTR)waveOutProc,
+										(DWORD_PTR)this,					// User data.
 										(DWORD)CALLBACK_FUNCTION);
 
 		if (errCode != MMSYSERR_NOERROR) return FALSE;

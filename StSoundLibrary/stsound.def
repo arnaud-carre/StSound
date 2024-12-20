@@ -1,0 +1,20 @@
+EXPORTS
+    ymMusicCreate
+    ymMusicCreateWithRate
+    ymMusicDestroy
+    ymMusicSetLowpassFiler
+    ymMusicLoad
+    ymMusicLoadMemory
+    ymMusicCompute
+    ymMusicSetLoopMode
+    ymMusicGetLastError
+    ymMusicGetRegister
+    ymMusicGetInfo
+    ymMusicPlay
+    ymMusicPause
+    ymMusicStop
+    ymMusicIsOver
+    ymMusicRestart
+    ymMusicIsSeekable
+    ymMusicGetPos
+    ymMusicSeek

@@ -1,0 +1,54 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.platform.name }}
+    runs-on: ${{ matrix.platform.os }}
+
+    defaults:
+      run:
+        shell: ${{ matrix.platform.shell }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - { name: 'macOS',                os: macos-latest,   shell: 'sh' }
+          - { name: 'Windows (MSVC, x86)',  os: windows-latest, shell: 'sh', msvc-arch: 'Win32' }
+          - { name: 'Windows (MSVC, x64)',  os: windows-latest, shell: 'sh', msvc-arch: 'x64' }
+          - { name: 'Windows (mingw32)',    os: windows-latest, shell: 'msys2 {0}', msystem: mingw32, msys-env: mingw-w64-i686 }
+          - { name: 'Windows (mingw64)',    os: windows-latest, shell: 'msys2 {0}', msystem: mingw64, msys-env: mingw-w64-x86_64 }
+          - { name: 'Ubuntu',               os: ubuntu-latest,  shell: 'sh' }
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: ${{ matrix.platform.msvc-arch != '' }}
+        with:
+          arch: ${{ matrix.platform.msvc-arch }}
+      - name: 'Set up MSYS2'
+        if: ${{ matrix.platform.msystem != ''  }}
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.platform.msystem }}
+          path-type: inherit
+          install: >-
+            ${{ matrix.platform.msys-env }}-cmake
+            ${{ matrix.platform.msys-env }}-gcc
+            ${{ matrix.platform.msys-env }}-ninja
+      - name: 'Install Ninja'
+        uses: aseprite/get-ninja@main
+        if: ${{ !contains(matrix.platform.shell, 'msys2') }}
+      - name: 'CMake (Configure)'
+        run: |
+          cmake -B build -GNinja \
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$(pwd)/bin \
+            -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
+      - name: 'CMake (Build)'
+        run: |
+          cmake --build build --verbose -- -k0
+      - name: 'CTest'
+        run: |
+          ctest --test-dir build -VV

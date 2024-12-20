@@ -363,6 +363,7 @@ ymint ndrum;
 
 void	CYmMusic::setVolume(ymint volume)
 {
+	(void) volume;
 //		ymChip.setGlobalVolume(volume);
 }
 
