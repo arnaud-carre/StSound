@@ -3,15 +3,29 @@ set(PROJECT_NAME SmallYmPlayer)
 ################################################################################
 # Source groups
 ################################################################################
+if (WIN32)
+
 set(Headers
     "SoundServer.h"
 )
-source_group("Headers" FILES ${Headers})
-
 set(Sources
     "SmallYmPlayer.cpp"
     "SoundServer.cpp"
 )
+
+else
+
+set(Headers
+	"SoundServerOpenAL.h"
+)
+set(Sources
+	"SmallYmPlayer.cpp"
+	"SoundServerOpenAL.cpp"
+)
+
+endif
+
+source_group("Headers" FILES ${Headers})
 source_group("Sources" FILES ${Sources})
 
 set(ALL_FILES

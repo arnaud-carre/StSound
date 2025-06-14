@@ -1,5 +1,3 @@
-#ifdef _WIN32
-
 /*-----------------------------------------------------------------------------
 
 	ST-Sound ( YM files player library )
@@ -36,12 +34,17 @@
 *
 -----------------------------------------------------------------------------*/
 
-#include <windows.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <conio.h>
+#include <unistd.h>
+#ifdef _WIN32
+#include <windows.h>
 #include "SoundServer.h"
+#else
+#include "SoundServerOpenAL.h"
+#endif
 #include "../StSoundLibrary/StSoundLibrary.h"
 
 
@@ -49,9 +52,14 @@
 static	volatile	YMMUSIC			*	s_pMusic = NULL;
 static	CSoundServer					soundServer;
 
+static	volatile	bool				ctrl_c = false;
+static	void		termHandler(int)
+{
+	ctrl_c = true;
+	signal(SIGINT, &termHandler);
+}
 
-
-static	void	soundServerCallback(void *pBuffer,long size)
+static	void		soundServerCallback(void *pBuffer,long size)
 {
 
 	if (s_pMusic)
@@ -61,34 +69,24 @@ static	void	soundServerCallback(void *pBuffer,long size)
 	}
 }
 
+enum endstate_t
+{
+	endstate_ok,
+	endstate_abort,
+	endstate_file,
+	endstate_fatal
+};
 
-
-
-
-int main(int argc, char* argv[])
+static	endstate_t	do_file(const char* pFileName, bool loop)
 {
 
-	//--------------------------------------------------------------------------
-	// Checks args.
-	//--------------------------------------------------------------------------
-	printf(	"SmallYmPlayer.\n"
-			"Using ST-Sound Library, under BSD license\n"
-			"Copyright (C) 1995-1999 Arnaud Carre ( http://leonard.oxg.free.fr )\n");
-	
-	if (argc!=2)
-	{
-		printf("Usage: SmallYmPlayer <ym music file>\n\n");
-		return -1;
-	}
+	endstate_t result = endstate_ok;
 
-
-	//--------------------------------------------------------------------------
-	// Load YM music and creates WAV file
-	//--------------------------------------------------------------------------
-	printf("Loading music \"%s\"...\n",argv[1]);
+	printf("Loading music \"%s\"...\n",pFileName);
 	YMMUSIC *pMusic = ymMusicCreate();
+	s_pMusic = pMusic;			// global instance for soundserver callback
 
-	if (ymMusicLoad(pMusic,argv[1]))
+	if (ymMusicLoad(pMusic,pFileName))
 	{
 		if (soundServer.open(soundServerCallback,500))
 		{
@@ -99,61 +97,98 @@ int main(int argc, char* argv[])
 			printf("Author...: %s\n",info.pSongAuthor);
 			printf("Comment..: %s\n",info.pSongComment);
 			printf("Duration.: %d:%02d\n",info.musicTimeInSec/60,info.musicTimeInSec%60);
-			printf("Driver...: %s\n", info.pSongPlayer);
 
-			printf("\nPlaying music...(press a key to abort)\n");
+			printf("\nPlaying music...(press Ctrl-C to abort)\n");
 
-			ymMusicSetLoopMode(pMusic,YMTRUE);
+			signal(SIGINT, &termHandler);
+			ymMusicSetLoopMode(pMusic,loop?YMTRUE:YMFALSE);
 			ymMusicPlay(pMusic);
-			s_pMusic = pMusic;			// global instance for soundserver callback
 
 			int oldSec = -1;
-			for (;;)
+			bool finished = false;
+			while (!finished)
 			{
-				if (_kbhit())
+				if (ctrl_c)
+				{
+					ctrl_c = false;
 					break;
+				}
 
 				int sec = ymMusicGetPos(pMusic) / 1000;
 				if (sec != oldSec)
 				{
-					printf("Time: %d:%02d\r",sec/60,sec%60);
+					// write to stderr, some platforms buffer stdout without \n
+					fprintf(stderr,"Time: %d:%02d\r",sec/60,sec%60);
 					oldSec = sec;
 				}
+				sleep(1);
 
-				Sleep(20);
+				if (!loop && sec == info.musicTimeInSec) finished = true;
 			}
-			_getch();		// flush the key pressed
-			printf("\n");
+			fprintf(stderr,"\n");
 
 			// Switch off replayer
 			s_pMusic = NULL;
 			ymMusicStop(pMusic);
 			soundServer.close();
-
+			result = finished?endstate_ok:endstate_abort;
 		}
 		else
 		{
-			printf("ERROR: Unable to initialize sound card hardware\n");
+			fprintf(stderr,"ERROR: Unable to initialize sound card hardware\n");
+			result = endstate_fatal;
 		}
-
 	}
 	else
 	{
-		printf("Error in loading file %s:\n%s\n",argv[1],ymMusicGetLastError(pMusic));
+		fprintf(stderr,"Error in loading file %s:\n%s\n",pFileName,ymMusicGetLastError(pMusic));
+		result = endstate_file;
 	}
 
 	ymMusicDestroy(pMusic);
 
-	return 0;
+	return result;
 }
-#else
-
-#include <stdio.h>
 
 int main(int argc, char* argv[])
 {
-	printf(	"SmallYmPlayer only run on Windows, sorry!\n");
-	return 0;	
-}
 
-#endif
+	//--------------------------------------------------------------------------
+	// Checks args.
+	//--------------------------------------------------------------------------
+	printf(	"SmallYmPlayer.\n"
+			"Using ST-Sound Library, under BSD license\n"
+			"Copyright (C) 1995-1999 Arnaud Carre ( http://leonard.oxg.free.fr )\n");
+
+	if (argc<2)
+	{
+		printf("Usage: SmallYmPlayer <ym music files>\n\n");
+		return -1;
+	}
+
+	//--------------------------------------------------------------------------
+	// Play YM music in a loop
+	//--------------------------------------------------------------------------
+	bool looping_a_single_file = (argc==2);
+	do
+	{
+		for (int i = 1; i < argc; ++i)
+		{
+			switch (do_file(argv[i],looping_a_single_file))
+			{
+				case endstate_ok:
+					break;
+				case endstate_abort:
+					sleep(1);
+					if (ctrl_c) return 0;
+					break;
+				case endstate_fatal:
+				case endstate_file:
+					return -1;
+			}
+		}
+
+	} while (!looping_a_single_file && !ctrl_c);
+
+	return 0;
+}
