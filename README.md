@@ -1,3 +1,9 @@
+# Deprecacted!
+
+After decades of StSound to play even older .ym files, this lib is now deprecated. For better quality / accuracy please now use my [AtariAudio library](https://github.com/arnaud-carre/AtariAudio) instead.
+
+This repo will still remain, but won't be updated
+
 # StSound
 Library to replay YM files ( Atari ST music file format )
 
